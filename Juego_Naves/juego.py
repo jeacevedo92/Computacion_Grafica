@@ -2,8 +2,8 @@ import pygame
 import random
 
 #constantes
-WIDTH = 640
-HIGH = 512
+WIDTH = 1000
+HIGH = 700
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -65,7 +65,7 @@ if __name__ == '__main__':
 	
 	#Se  cargan las imagenes
 	bullet = pygame.image.load('Images/Bullet.png').convert_alpha()
-	background = pygame.image.load('Images/Background.png').convert_alpha()
+	background = pygame.image.load('Images/Background_3.png').convert_alpha()
 	sound = pygame.mixer.Sound('Sound/sound.wav')
 	
 	#Se coloca la imagen de fondo
@@ -98,7 +98,7 @@ if __name__ == '__main__':
 	ls_jugadores = pygame.sprite.Group()
  
 	#se crea el jugador 
-	jugador = Player('Images/nave.png')
+	jugador = Player('Images/sprite_ship.png')
 	
 	#se obtiene la posicion del mouse 
 	pos = pygame.mouse.get_pos()
