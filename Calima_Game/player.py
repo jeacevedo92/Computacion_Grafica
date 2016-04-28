@@ -8,8 +8,8 @@ class Player(pygame.sprite.Sprite):
 		pygame.sprite.Sprite.__init__(self)
 		self.image = pygame.image.load(imagen).convert_alpha()
 		self.rect = self.image.get_rect()
-		self.vida = 4   # puntos de vida 
-		self.salud = 600  #
+		self.vida = 6   # puntos de vida 
+		self.salud = 60  #
 
 	def chocar(self):
 		self.vida -= 1

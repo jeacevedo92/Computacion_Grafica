@@ -14,7 +14,7 @@ class Enemy(pygame.sprite.Sprite):
 		self.direccion = 0#direccion 0 = de izquierda a derecha
 		self.disparar= random.randrange(200)# tiempo para disparar cada 200 pixeles	
 		self.tipo = random.randrange(1,4)
-		self.recorrido_ida = Bresenham1(random.randrange(0,WIDTH),random.randrange(0,HIGH-200),random.randrange(0,WIDTH),random.randrange(0,HIGH-200))
+		self.recorrido_ida = Bresenham1(random.randrange(0,WIDTH-50),random.randrange(0,HIGH-200),random.randrange(0,WIDTH-50),random.randrange(0,HIGH-200))
 		self.cont = 0
 		self.velocidad = velocidad
 

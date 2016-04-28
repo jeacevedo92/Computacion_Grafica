@@ -10,8 +10,8 @@ from player import *
 from pygame.locals import *
 import time
 from asteroides import *
-
-
+from planets import *
+BLANCO = (255,255,255)
 
 #dimensiones de la pantalla
 WIDTH = 800
@@ -112,6 +112,8 @@ if __name__ == '__main__':
 	fondoMenu_principal = pygame.image.load('Images/fondo_Menu.png')
 	background_nivel2 = pygame.image.load('Images/Background1.png').convert_alpha()
 	
+	ganaste =pygame.image.load('Images/ganaste.png').convert_alpha()
+	game_over = gaste =pygame.image.load('Images/game_over.png').convert_alpha()
 	#tipoFuente ------------------------------------
 	fuente_Menu = pygame.font.Font(None, 40)
 	fuente_instrucciones = pygame.font.Font(None, 30)
@@ -156,21 +158,15 @@ if __name__ == '__main__':
 
 
 	#Menu_principal----------------------------------------------------------------
-	nuevo = Menu_Principal("NUEVA PARTIDA", (198,94), SCREEN, fuente_Menu)
+	nuevo = Menu_Principal("NUEVA PARTIDA", (300,400), SCREEN, fuente_Menu)
 	nuevo_tam = nuevo.get_tam()
 
-	cargar = Menu_Principal("REGISTRO DE PUNTAJE", (145,212), SCREEN, fuente_Menu)
-	cargar_tam = cargar.get_tam()
-
-	intr = Menu_Principal("INSTRUCCIONES", (180,400), SCREEN, fuente_Menu)
+	intr = Menu_Principal("INSTRUCCIONES", (300,500), SCREEN, fuente_Menu)
 	intr_tam = intr.get_tam()
 	#----------------------------------------------------------------------------
 
 
 	#------------------------ menu instrucciones--------------------------------------------
-	sig = Menu_Principal("SIGUIENTE", (550,550), SCREEN, fuente_instrucciones)
-	sig_tam = sig.get_tam()
-
 	iniciar_partida = Menu_Principal("INICIAR PARTIDA", (300,550), SCREEN, fuente_instrucciones)
 	iniciar_tam = iniciar_partida.get_tam()
 
@@ -186,8 +182,8 @@ if __name__ == '__main__':
 	#Puntaje del juego-----------------------
 	puntos = 0
 
-	opciones = [nuevo, cargar, intr]
-	opciones_int = [sig, iniciar_partida, volver_ini ]
+	opciones = [nuevo, intr]
+	opciones_int = [iniciar_partida, volver_ini ]
 	inicio_j = False
 	inst_j = False
 	pausa = False
@@ -227,7 +223,6 @@ if __name__ == '__main__':
 				opc.draw()
 			pygame.display.update()	
 	#----------------------------------------------------------------------------------------------	
-		
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				end = True
@@ -242,26 +237,24 @@ if __name__ == '__main__':
 			
 		#----boton nueva partida-------------------------------------------------------------------------------
 		if not inicio_j and not inst_j and not registro:
-			if event.type == pygame.MOUSEBUTTONDOWN and 198 <= event.pos[0] <= (198 + nuevo_tam.width) and 94 <= event.pos[1] <= (94 + nuevo_tam.height) :
+			if event.type == pygame.MOUSEBUTTONDOWN and 300 <= event.pos[0] <= (300 + nuevo_tam.width) and 400 <= event.pos[1] <= (400 + nuevo_tam.height) :
 				inicio_j = True
 				intro = True
 				inteCont = 0
 				puntos = 0
-#------------------------------------------------------------------------------------------------------------		
-			if event.type == pygame.MOUSEBUTTONDOWN and 145 <= event.pos[0] <= (145 + cargar_tam.width) and 212 <= event.pos[1] <= (212 + cargar_tam.height) :
-				registro = True
+
 #-------boton instrucciones-----------------------------------------------------------------------------------
-			if event.type == pygame.MOUSEBUTTONDOWN and 180 <= event.pos[0] <= (180 + intr_tam.width) and 400 <= event.pos[1] <= (400 + intr_tam.height) :
+			if event.type == pygame.MOUSEBUTTONDOWN and 300 <= event.pos[0] <= (300 + intr_tam.width) and 500 <= event.pos[1] <= (500 + intr_tam.height) :
 				inst_j = True
 				fin_instruccion = False
 				inst_c = 0
 
 		#INSTRUCCIONES DEL JUEGO----------------------------------------------------------------
-		if inst_j and inst_c <= 1:
+		if inst_j:
 			pygame.mouse.set_visible(True)
 			SCREEN.fill(NEGRO)
-			instru = pygame.image.load('Images/'+str(inst_c)+'.png')
-			SCREEN.blit(instru,(0,0))
+			instru = pygame.image.load('Images/0.png')
+			SCREEN.blit(instru,(0,-80))
 			pygame.event.pump()
 
 			for op in opciones_int:
@@ -297,13 +290,24 @@ if __name__ == '__main__':
 		#------------------------------nivel 1 ---------------------------
 		
 		if inicio_j and nivel1:
-			time_ast = random.randrange(0,400)
-			if time_ast == 3:
+
+
+			time_ast = random.randrange(0,500)
+			time_planets = random.randrange(0,300)
+
+			if time_ast == 150:
 				asteroide = Asteroide('Images/asteroid'+str(random.randrange(1,3))+'.png')
-				asteroide.rect.x=random.randrange(WIDTH-100)
-				asteroide.rect.y=0
+				asteroide.rect.x=random.randrange(WIDTH-200)
+				asteroide.rect.y=-200
 				ls_asteroides.add(asteroide)
 				ls_todos.add(asteroide)
+
+			if time_planets == 3:
+				planeta = Planets('Images/planet'+str(random.randrange(1,3))+'.png')
+				planeta.rect.x=random.randrange(WIDTH-200)
+				planeta.rect.y=-200
+				ls_planetas.add(planeta)
+				ls_todos.add(planeta)
 
 			pygame.mouse.set_visible(False)
 
@@ -345,15 +349,31 @@ if __name__ == '__main__':
 					explosion.play()
 					puntos+=1
 
+			#para los impactos entre las balas del jugador y los asteroides
+			for b in ls_balas:
+				ls_impactos = pygame.sprite.spritecollide(b,ls_asteroides,True)			
+				for impacto in ls_impactos:
+					ls_balas.remove(b)
+					ls_todos.remove(b)
+					#animacion_explocion(background,ls_todos,SCREEN,'Images/explosion_enemigos.png',b.rect.x-100,b.rect.y-100)
+					explosion.play()
+					puntos+=10
+
 			#choques entre el jugador y los enemigos 
 			ls_choque = pygame.sprite.spritecollide(jugador,ls_enemigos,False)
 			
 			for elemento in ls_choque:			
 				jugador.chocar()
+				explosion.play()				
+				reloj.tick(0.5)
+
+			ls_choque_asteroides = pygame.sprite.spritecollide(jugador,ls_asteroides,False)
+
+			for c in ls_choque_asteroides:			
+				jugador.chocar()
 				explosion.play()
-
-
-
+				reloj.tick(10)
+			
 			#para los disparos de los enemigos
 			for e in ls_enemigos:
 				if e.disparar == 0:
@@ -377,11 +397,16 @@ if __name__ == '__main__':
 
 			if jugador.salud <= 0:
 				jugador.vida-=1
-				jugador.salud = 600
+				jugador.salud = 60				
+				explosion.play()			
+				reloj.tick(1)
 				#print "jugador.salud"
 				#print jugador.salud
 
 			if jugador.vida == 0 :
+				SCREEN.blit(game_over,[0,0])
+				pygame.display.flip()
+				reloj.tick(0.2)
 				#print "termino el juego"
 				explosion.play()
 				Loser.play()
@@ -409,19 +434,22 @@ if __name__ == '__main__':
 				SCREEN.blit(vida3,(70,550))
 				SCREEN.blit(vida4,(100,550))
 
-			if jugador.salud <= 600 and jugador.salud >= 500:
+			if jugador.salud <= 60 and jugador.salud >= 50:
 				SCREEN.blit(barra_vida1,(700,550))
-			elif jugador.salud <= 500 and jugador.salud >= 400:
+			elif jugador.salud <= 50 and jugador.salud >= 40:
 				SCREEN.blit(barra_vida2,(700,550))
-			elif jugador.salud <= 400 and jugador.salud >= 300:
+			elif jugador.salud <= 40 and jugador.salud >= 30:
 				SCREEN.blit(barra_vida3,(700,550))
-			elif jugador.salud <= 300 and jugador.salud >= 200:
+			elif jugador.salud <= 30 and jugador.salud >= 20:
 				SCREEN.blit(barra_vida4,(700,550))
-			elif jugador.salud <= 200 and jugador.salud >= 100:
+			elif jugador.salud <= 20 and jugador.salud >= 10:
 				SCREEN.blit(barra_vida5,(700,550))
-			elif jugador.salud <= 100 and jugador.salud >= 0:
+			elif jugador.salud <= 10 and jugador.salud >= 0:
 				SCREEN.blit(barra_vida6,(700,550))
 
+			#puntaje
+			txt_puntos = fuente_instrucciones.render("PUNTUACION: " +str(puntos),True,BLANCO)
+			SCREEN.blit(txt_puntos,(0,0))		
 
 			ls_todos.update()
 			ls_todos.draw(SCREEN)
@@ -431,6 +459,21 @@ if __name__ == '__main__':
 
 		# nivel 2  ----------------------------------------------------------------------------------
 		if inicio_j and nivel2:
+
+			time_ast = random.randrange(0,200)
+			if time_ast == 150:
+				asteroide = Asteroide('Images/asteroid'+str(random.randrange(1,3))+'.png')
+				asteroide.rect.x=random.randrange(WIDTH-100)
+				asteroide.rect.y=0
+				ls_asteroides.add(asteroide)
+				ls_todos.add(asteroide)
+			if time_planets == 3:
+				planeta = Planets('Images/planet'+str(random.randrange(1,3))+'.png')
+				planeta.rect.x=random.randrange(WIDTH-200)
+				planeta.rect.y=-200
+				ls_planetas.add(planeta)
+				ls_todos.add(planeta)
+
 			pygame.mouse.set_visible(False)	
 
 			if keys_down[K_UP]:
@@ -447,14 +490,15 @@ if __name__ == '__main__':
 					jugador.rect.x +=2
 
 
-			if num_enemigos <20:
+			if num_enemigos <30:
 				if len(ls_enemigos)==0:
 					crearOrda(ls_enemigos,ls_todos,num_enemigos,3)
 					crearOrda1(ls_enemigos,ls_todos,num_enemigos,3)
 					num_enemigos+=5
 			else:
-				end = True
-				#print "FIn juego"
+				SCREEN.blit(ganaste,[0,0])
+				pygame.display.flip()
+				reloj.tick(0.2)
 
 			#para los impactos entre las balas de la nave y los enemigos
 			for b in ls_balas:
@@ -466,11 +510,30 @@ if __name__ == '__main__':
 					explosion.play()
 					puntos+=1
 
+			#para los impactos entre las balas del jugador y los asteroides
+			for b in ls_balas:
+				ls_impactos = pygame.sprite.spritecollide(b,ls_asteroides,True)			
+				for impacto in ls_impactos:
+					ls_balas.remove(b)
+					ls_todos.remove(b)
+					#animacion_explocion(background,ls_todos,SCREEN,'Images/explosion_enemigos.png',b.rect.x-100,b.rect.y-100)
+					explosion.play()
+					puntos+=10
+
 			#choques entre el jugador y los enemigos 
 			ls_choque = pygame.sprite.spritecollide(jugador,ls_enemigos,False)
 			
 			for elemento in ls_choque:			
 				jugador.chocar()
+				explosion.play()
+				reloj.tick(0.5)
+
+			ls_choque_asteroides = pygame.sprite.spritecollide(jugador,ls_asteroides,False)
+
+			for c in ls_choque_asteroides:			
+				jugador.chocar()
+				explosion.play()
+				reloj.tick(5)
 
 
 			#para los disparos de los enemigos
@@ -493,28 +556,62 @@ if __name__ == '__main__':
 					ls_todos.remove(be)
 					Me_dieron.play()
 
-			if jugador.salud == 0:
+			if jugador.salud <= 0:
 				jugador.vida-=1
-				jugador.salud = 600
+				jugador.salud = 60
+				explosion.play()
+				reloj.tick(1)
 				#print "jugador.salud"
 				#print jugador.salud
 
 			if jugador.vida == 0 :
+				SCREEN.blit(game_over,[0,0])
+				pygame.display.flip()
+				reloj.tick(0.2)
 				#print "termino el juego"
 				explosion.play()
 				Loser.play()
-				reloj.tick(5)
 				end = True
 				#print "jugador.vida"
 				#print jugador.vida
 
 
-			print jugador.salud
+			#print jugador.salud
 
 			#se actualiza el juego !!!!	
 			SCREEN.blit(background_nivel2, [0,0])
 			SCREEN.blit(background_neblina, [0,0])		
 			SCREEN.blit(lifemask,[0,HIGH-70])
+			if jugador.vida == 1:
+				SCREEN.blit(vida1,(10,550))
+			elif jugador.vida == 2:
+				SCREEN.blit(vida1,(10,550))
+				SCREEN.blit(vida2,(40,550))
+			elif jugador.vida == 3:
+				SCREEN.blit(vida1,(10,550))
+				SCREEN.blit(vida2,(40,550))
+				SCREEN.blit(vida3,(70,550))
+			elif jugador.vida == 4:
+				SCREEN.blit(vida1,(10,550))
+				SCREEN.blit(vida2,(40,550))
+				SCREEN.blit(vida3,(70,550))
+				SCREEN.blit(vida4,(100,550))
+
+			if jugador.salud <= 60 and jugador.salud >= 50:
+				SCREEN.blit(barra_vida1,(700,550))
+			elif jugador.salud <= 50 and jugador.salud >= 40:
+				SCREEN.blit(barra_vida2,(700,550))
+			elif jugador.salud <= 40 and jugador.salud >= 30:
+				SCREEN.blit(barra_vida3,(700,550))
+			elif jugador.salud <= 30 and jugador.salud >= 20:
+				SCREEN.blit(barra_vida4,(700,550))
+			elif jugador.salud <= 20 and jugador.salud >= 10:
+				SCREEN.blit(barra_vida5,(700,550))
+			elif jugador.salud <= 10 and jugador.salud >= 0:
+				SCREEN.blit(barra_vida6,(700,550))
+			#puntaje
+			txt_puntos = fuente_instrucciones.render("PUNTUACION: " +str(puntos),True,BLANCO)
+			SCREEN.blit(txt_puntos,(0,0))
 			ls_todos.update()
 			ls_todos.draw(SCREEN)
 			pygame.display.flip()
