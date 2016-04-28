@@ -82,6 +82,7 @@ if __name__ == '__main__':
 	#CARGA DE IMAGENES --------------------------------------------------------------------
 	
 	bullet = pygame.image.load('Images/Bullet.png').convert_alpha()	
+	bullet_mask = pygame.image.load('Images/glow_laser_shooting.png')
 	lifemask = pygame.image.load('Images/lifemask.png').convert_alpha()
 	jugador = Player('Images/sprite_ship.png')
 
@@ -98,8 +99,9 @@ if __name__ == '__main__':
 	#-------------------------------------------------------------------------------------------
 
 	#tipoFuente ------------------------------------
-	fuente1 = pygame.font.Font(None, 35)
-	fuente2 = pygame.font.Font(None, 60)
+	fuente_Menu = pygame.font.Font(None, 40)
+
+	fuente_instrucciones = pygame.font.Font(None, 30)
 
 	
 	#Se cargan los sonidos---------------------------------------------
@@ -142,25 +144,25 @@ if __name__ == '__main__':
 
 
 	#Menu_principal----------------------------------------------------------------
-	nuevo = Menu_Principal("NUEVA PARTIDA", (198,94), SCREEN, fuente2)
+	nuevo = Menu_Principal("NUEVA PARTIDA", (198,94), SCREEN, fuente_Menu)
 	nuevo_tam = nuevo.get_tam()
 
-	cargar = Menu_Principal("REGISTRO DE PUNTAJE", (145,212), SCREEN, fuente2)
+	cargar = Menu_Principal("REGISTRO DE PUNTAJE", (145,212), SCREEN, fuente_Menu)
 	cargar_tam = cargar.get_tam()
 
-	intr = Menu_Principal("INSTRUCCIONES", (180,400), SCREEN, fuente2)
+	intr = Menu_Principal("INSTRUCCIONES", (180,400), SCREEN, fuente_Menu)
 	intr_tam = intr.get_tam()
 	#----------------------------------------------------------------------------
 
 
 	#------------------------ menu instrucciones--------------------------------------------
-	sig = Menu_Principal("SIGUIENTE", (500,400), SCREEN, fuente2)
+	sig = Menu_Principal("SIGUIENTE", (550,550), SCREEN, fuente_instrucciones)
 	sig_tam = sig.get_tam()
 
-	iniciar_partida = Menu_Principal("INICIAR PARTIDA", (200,400), SCREEN, fuente2)
+	iniciar_partida = Menu_Principal("INICIAR PARTIDA", (300,550), SCREEN, fuente_instrucciones)
 	iniciar_tam = iniciar_partida.get_tam()
 
-	volver_ini = Menu_Principal("VOLVER AL INICIO", (50,400), SCREEN, fuente2)
+	volver_ini = Menu_Principal("VOLVER AL INICIO", (50,550), SCREEN, fuente_instrucciones)
 	volver_tam = volver_ini.get_tam()
 	#-----------------------------------------------------------------------------------------
 
@@ -213,32 +215,40 @@ if __name__ == '__main__':
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				end = True
-			elif keys_down[K_SPACE]:
-				Bala = Bullet('Images/Bullet.png')
+
+			if keys_down[K_SPACE]:
+				Bala = Bullet('Images/sprite_laser.png')
+				Bala_mask = Bullet('Images/glow_laser_shooting.png')
 				sound.play()
 				Bala.rect.x = jugador.rect.x+32
 				Bala.rect.y = jugador.rect.y
-				ls_balas.add(Bala)
-				ls_todos.add(Bala)
 
-			#----boton nueva partida-------------------------------------------------------------------------------
-			if not inicio_j and not inst_j and not registro:
-				if event.type == pygame.MOUSEBUTTONDOWN and 198 <= event.pos[0] <= (198 + nuevo_tam.width) and 94 <= event.pos[1] <= (94 + nuevo_tam.height) :
-					inicio_j = True
-					intro = True
-					inteCont = 0
-					puntos = 0
-	#------------------------------------------------------------------------------------------------------------		
-				if event.type == pygame.MOUSEBUTTONDOWN and 145 <= event.pos[0] <= (145 + cargar_tam.width) and 212 <= event.pos[1] <= (212 + cargar_tam.height) :
-					registro = True
-	#-------boton instrucciones-----------------------------------------------------------------------------------
-				if event.type == pygame.MOUSEBUTTONDOWN and 180 <= event.pos[0] <= (180 + intr_tam.width) and 400 <= event.pos[1] <= (400 + intr_tam.height) :
-					inst_j = True
-					fin_instruccion = False
-					inst_c = 0
+				Bala_mask.rect.x = jugador.rect.x+16
+				Bala_mask.rect.y = jugador.rect.y
+				ls_balas.add(Bala)
+				ls_balas.add(Bala_mask)
+				ls_todos.add(Bala)
+				ls_todos.add(Bala_mask)
+			
+		#----boton nueva partida-------------------------------------------------------------------------------
+		if not inicio_j and not inst_j and not registro:
+			if event.type == pygame.MOUSEBUTTONDOWN and 198 <= event.pos[0] <= (198 + nuevo_tam.width) and 94 <= event.pos[1] <= (94 + nuevo_tam.height) :
+				inicio_j = True
+				intro = True
+				inteCont = 0
+				puntos = 0
+#------------------------------------------------------------------------------------------------------------		
+			if event.type == pygame.MOUSEBUTTONDOWN and 145 <= event.pos[0] <= (145 + cargar_tam.width) and 212 <= event.pos[1] <= (212 + cargar_tam.height) :
+				registro = True
+#-------boton instrucciones-----------------------------------------------------------------------------------
+			if event.type == pygame.MOUSEBUTTONDOWN and 180 <= event.pos[0] <= (180 + intr_tam.width) and 400 <= event.pos[1] <= (400 + intr_tam.height) :
+				inst_j = True
+				fin_instruccion = False
+				inst_c = 0
 
 		#INSTRUCCIONES DEL JUEGO----------------------------------------------------------------
 		if inst_j and inst_c <= 1:
+			pygame.mouse.set_visible(True)
 			SCREEN.fill(NEGRO)
 			instru = pygame.image.load('Images/'+str(inst_c)+'.png')
 			SCREEN.blit(instru,(0,0))
@@ -255,12 +265,13 @@ if __name__ == '__main__':
 			pygame.display.update()	
 			pygame.display.flip()
 
+			
 			if inst_j:
-				if event.type == pygame.MOUSEBUTTONDOWN and not fin_instruccion and 1000 <= event.pos[0] <= (1000 + sig_tam.width) and 620 <= event.pos[1] <= (620 + sig_tam.height) :
+				if event.type == pygame.MOUSEBUTTONDOWN and not fin_instruccion and 550 <= event.pos[0] <= (550 + sig_tam.width) and 550 <= event.pos[1] <= (550 + sig_tam.height) :
 					inst_c += 1
 					fin_instruccion = True
 
-				if event.type == pygame.MOUSEBUTTONDOWN  and 500 <= event.pos[0] <= (500 + iniciar_tam.width) and 620 <= event.pos[1] <= (620 + iniciar_tam.height) :
+				if event.type == pygame.MOUSEBUTTONDOWN  and 300 <= event.pos[0] <= (300 + iniciar_tam.width) and 550 <= event.pos[1] <= (550 + iniciar_tam.height) :
 					inicio_j = True
 					inst_j = False
 					intro = True
@@ -268,7 +279,7 @@ if __name__ == '__main__':
 					inteCont = 0
 
 
-				if event.type == pygame.MOUSEBUTTONDOWN  and 50 <= event.pos[0] <= (50 + volver_tam.width) and 620 <= event.pos[1] <= (620 + volver_tam.height) :
+				if event.type == pygame.MOUSEBUTTONDOWN  and 50 <= event.pos[0] <= (50 + volver_tam.width) and 550 <= event.pos[1] <= (550 + volver_tam.height) :
 					inst_j = False
 
 

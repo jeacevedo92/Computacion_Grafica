@@ -13,3 +13,4 @@ class Bullet(pygame.sprite.Sprite):
 			self.rect.y-=5     
 		else:
 			self.rect.y+=5
+			

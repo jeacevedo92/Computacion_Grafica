@@ -1,9 +1,9 @@
 import pygame
 
-ROSADO = (255,105,180)
 NEGRO = (0,0,0)
 BLANCO = (255,255,255)
 GRIS = (150, 150 , 150)
+BLUE = (0,0,255)
 
 
 class Menu_Principal:
@@ -31,9 +31,9 @@ class Menu_Principal:
 
 	def get_color(self):
 		if self.ver:
-			return ROSADO
+			return BLUE
 		else:
-			return GRIS
+			return BLANCO
 
 	def set_rect(self):
 		self.set_rend()
