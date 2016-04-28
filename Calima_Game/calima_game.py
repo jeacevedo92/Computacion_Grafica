@@ -9,6 +9,7 @@ from Enemy1 import *
 from player import *
 from pygame.locals import *
 import time
+from asteroides import *
 
 
 
@@ -82,9 +83,26 @@ if __name__ == '__main__':
 	#CARGA DE IMAGENES --------------------------------------------------------------------
 	
 	bullet = pygame.image.load('Images/Bullet.png').convert_alpha()	
-	bullet_mask = pygame.image.load('Images/glow_laser_shooting.png')
 	lifemask = pygame.image.load('Images/lifemask.png').convert_alpha()
+
+
+	#imagenes barra de salud
+	barra_vida1 = pygame.image.load('Images/barra_vida1.png').convert_alpha()
+	barra_vida2 = pygame.image.load('Images/barra_vida2.png').convert_alpha()
+	barra_vida3 = pygame.image.load('Images/barra_vida3.png').convert_alpha()
+	barra_vida4 = pygame.image.load('Images/barra_vida4.png').convert_alpha()
+	barra_vida5 = pygame.image.load('Images/barra_vida5.png').convert_alpha()
+	barra_vida6 = pygame.image.load('Images/barra_vida6.png').convert_alpha()
+
+	#Se crea el Objeto jugador
 	jugador = Player('Images/sprite_ship.png')
+	
+	#imagenes vidas 
+	vida1 = pygame.image.load('Images/vida1.png').convert_alpha()
+	vida2 = pygame.image.load('Images/vida2.png').convert_alpha()
+	vida3 = pygame.image.load('Images/vida3.png').convert_alpha()
+	vida4 = pygame.image.load('Images/vida4.png').convert_alpha()
+
 
 	#jugador_nivel2 = Player('Images/sprite_ship_shooting_laser.png')	
 	
@@ -94,13 +112,8 @@ if __name__ == '__main__':
 	fondoMenu_principal = pygame.image.load('Images/fondo_Menu.png')
 	background_nivel2 = pygame.image.load('Images/Background1.png').convert_alpha()
 	
-
-	menu_pau = pygame.image.load('Images/pausa.jpg')
-	#-------------------------------------------------------------------------------------------
-
 	#tipoFuente ------------------------------------
 	fuente_Menu = pygame.font.Font(None, 40)
-
 	fuente_instrucciones = pygame.font.Font(None, 30)
 
 	
@@ -122,8 +135,7 @@ if __name__ == '__main__':
 	#inicializa el reloj-------------------- 
 	reloj = pygame.time.Clock()
 
-	#Puntaje del juego-----------------------
-	puntos = 0
+	
 
 	# se crean las listas para todos los objetos----------------- 
 	ls_todos =  pygame.sprite.Group()
@@ -133,7 +145,7 @@ if __name__ == '__main__':
 	ls_balae =  pygame.sprite.Group()
 	ls_asteroides = pygame.sprite.Group()
 	ls_planetas = pygame.sprite.Group()
-	
+		
 	#SE POSICIONA EL JUGADOR ------------------------------------------------------------
 	jugador.rect.x =WIDTH/2-70
 	jugador.rect.y =HIGH-70
@@ -171,6 +183,8 @@ if __name__ == '__main__':
 
 	num_enemigos = 0
 	end = False
+	#Puntaje del juego-----------------------
+	puntos = 0
 
 	opciones = [nuevo, cargar, intr]
 	opciones_int = [sig, iniciar_partida, volver_ini ]
@@ -185,6 +199,8 @@ if __name__ == '__main__':
 
 	nivel1 = True
 	nivel2 = False
+
+	time_ast = 0
 
 
 	SCREEN.blit(fondoMenu_principal,(0,0))# pantallazo inicial----------------------------------
@@ -217,18 +233,12 @@ if __name__ == '__main__':
 				end = True
 
 			if keys_down[K_SPACE]:
-				Bala = Bullet('Images/sprite_laser.png')
-				Bala_mask = Bullet('Images/glow_laser_shooting.png')
+				Bala = Bullet('Images/sprite_laser_1.png')
 				sound.play()
-				Bala.rect.x = jugador.rect.x+32
+				Bala.rect.x = jugador.rect.x+15
 				Bala.rect.y = jugador.rect.y
-
-				Bala_mask.rect.x = jugador.rect.x+16
-				Bala_mask.rect.y = jugador.rect.y
 				ls_balas.add(Bala)
-				ls_balas.add(Bala_mask)
 				ls_todos.add(Bala)
-				ls_todos.add(Bala_mask)
 			
 		#----boton nueva partida-------------------------------------------------------------------------------
 		if not inicio_j and not inst_j and not registro:
@@ -285,9 +295,17 @@ if __name__ == '__main__':
 
 		#INICIA EL JUEGO --------------------------------------------------
 		#------------------------------nivel 1 ---------------------------
-		pygame.mouse.set_visible(False)
 		
 		if inicio_j and nivel1:
+			time_ast = random.randrange(0,400)
+			if time_ast == 3:
+				asteroide = Asteroide('Images/asteroid'+str(random.randrange(1,3))+'.png')
+				asteroide.rect.x=random.randrange(WIDTH-100)
+				asteroide.rect.y=0
+				ls_asteroides.add(asteroide)
+				ls_todos.add(asteroide)
+
+			pygame.mouse.set_visible(False)
 
 			intro = False
 
@@ -306,7 +324,6 @@ if __name__ == '__main__':
 
 
 			if num_enemigos <25:
-				print len(ls_enemigos) 
 				if len(ls_enemigos)==0:
 					crearOrda(ls_enemigos,ls_todos,num_enemigos,1)
 					crearOrda1(ls_enemigos,ls_todos,num_enemigos,1)
@@ -333,6 +350,8 @@ if __name__ == '__main__':
 			
 			for elemento in ls_choque:			
 				jugador.chocar()
+				explosion.play()
+
 
 
 			#para los disparos de los enemigos
@@ -350,31 +369,60 @@ if __name__ == '__main__':
 			for be in ls_balae:
 				impactos = pygame.sprite.spritecollide(be,ls_jugadores,False)			
 				for imp in impactos:
+					#print jugador.salud
 					jugador.Me_dieron()
 					ls_balae.remove(be)
 					ls_todos.remove(be)
 					Me_dieron.play()
 
-			if jugador.salud == 0:
+			if jugador.salud <= 0:
 				jugador.vida-=1
-				jugador.salud == 100
-				print "jugador.salud"
-				print jugador.salud
+				jugador.salud = 600
+				#print "jugador.salud"
+				#print jugador.salud
 
 			if jugador.vida == 0 :
-				print "termino el juego"
+				#print "termino el juego"
 				explosion.play()
 				Loser.play()
-				reloj.tick(5)
 				end = True
-				print "jugador.vida"
-				print jugador.vida
+				#print "jugador.vida"
+				#print jugador.vida
 			
 			
 			#se actualiza el juego !!!!	
 			SCREEN.blit(background_nivel1, [0,0])
 			SCREEN.blit(background_neblina, [0,0])		
 			SCREEN.blit(lifemask,[0,HIGH-70])
+			if jugador.vida == 1:
+				SCREEN.blit(vida1,(10,550))
+			elif jugador.vida == 2:
+				SCREEN.blit(vida1,(10,550))
+				SCREEN.blit(vida2,(40,550))
+			elif jugador.vida == 3:
+				SCREEN.blit(vida1,(10,550))
+				SCREEN.blit(vida2,(40,550))
+				SCREEN.blit(vida3,(70,550))
+			elif jugador.vida == 4:
+				SCREEN.blit(vida1,(10,550))
+				SCREEN.blit(vida2,(40,550))
+				SCREEN.blit(vida3,(70,550))
+				SCREEN.blit(vida4,(100,550))
+
+			if jugador.salud <= 600 and jugador.salud >= 500:
+				SCREEN.blit(barra_vida1,(700,550))
+			elif jugador.salud <= 500 and jugador.salud >= 400:
+				SCREEN.blit(barra_vida2,(700,550))
+			elif jugador.salud <= 400 and jugador.salud >= 300:
+				SCREEN.blit(barra_vida3,(700,550))
+			elif jugador.salud <= 300 and jugador.salud >= 200:
+				SCREEN.blit(barra_vida4,(700,550))
+			elif jugador.salud <= 200 and jugador.salud >= 100:
+				SCREEN.blit(barra_vida5,(700,550))
+			elif jugador.salud <= 100 and jugador.salud >= 0:
+				SCREEN.blit(barra_vida6,(700,550))
+
+
 			ls_todos.update()
 			ls_todos.draw(SCREEN)
 			pygame.display.flip()
@@ -406,7 +454,7 @@ if __name__ == '__main__':
 					num_enemigos+=5
 			else:
 				end = True
-				print "FIn juego"
+				#print "FIn juego"
 
 			#para los impactos entre las balas de la nave y los enemigos
 			for b in ls_balas:
@@ -447,18 +495,21 @@ if __name__ == '__main__':
 
 			if jugador.salud == 0:
 				jugador.vida-=1
-				jugador.salud == 100
-				print "jugador.salud"
-				print jugador.salud
+				jugador.salud = 600
+				#print "jugador.salud"
+				#print jugador.salud
 
 			if jugador.vida == 0 :
-				print "termino el juego"
+				#print "termino el juego"
 				explosion.play()
 				Loser.play()
 				reloj.tick(5)
 				end = True
-				print "jugador.vida"
-				print jugador.vida
+				#print "jugador.vida"
+				#print jugador.vida
+
+
+			print jugador.salud
 
 			#se actualiza el juego !!!!	
 			SCREEN.blit(background_nivel2, [0,0])
