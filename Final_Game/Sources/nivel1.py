@@ -14,16 +14,17 @@ class Nivel_01(Nivel):
         Nivel.__init__(self, jugador)
         self.limite=-1000
         # Arreglo con ancho, alto, x, y de la plataforma
-        nivel = [ [210, 70, 500, 500],
-                  [210, 70, 800, 400],
-                  [210, 70, 1000, 500],
-                  [210, 70, 1120, 300],
+        nivel = [ ["o3.png", 0, 500],
+                  ["o3.png", 500, 500],
+                  ["o3.png", 1000, 500],
+                  ["o3.png", 1500, 500],
+                  ["o3.png", 2000, 500],
                  ]
             
         # Go through the array above and add platforms
         for plataforma in nivel:
-            bloque = Plataforma(plataforma[0], plataforma[1])
-            bloque.rect.x = plataforma[2]
-            bloque.rect.y = plataforma[3]
+            bloque = Plataforma(plataforma[0],)
+            bloque.rect.x = plataforma[1]
+            bloque.rect.y = plataforma[2]
             bloque.jugador = self.jugador
             self.plataforma_lista.add(bloque)

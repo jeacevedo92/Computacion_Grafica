@@ -10,7 +10,7 @@ class Bullet(pygame.sprite.Sprite):
 		
 	def update(self):
 		if self.jugador == 1:  # el jugador 1 es la nave el jugador 0 son los enemigos 
-			self.rect.y-=5     
+			self.rect.x+=5     
 		else:
-			self.rect.y+=5
+			self.rect.x+=5
 			

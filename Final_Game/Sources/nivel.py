@@ -11,7 +11,7 @@ class Nivel(object):
     
     # Imagen de Fondo
     #fondo = None
-    fondo=pygame.image.load("espacio.jpg")
+    fondo=pygame.image.load("fondo2.png")
     #valor desplazamiento de fondo
     mov_fondo=0
     

@@ -4,6 +4,7 @@ import sys
 import pygame.locals
 
 from Colors import *
+from Bullet import *
 
 from nivel1 import *
 from Player import *
@@ -42,6 +43,8 @@ if __name__ == '__main__':
   pantalla = pygame.display.set_mode([ANCHO,ALTO])
   pygame.display.set_caption(" Super Space Smash ")
 
+  #Se cargan los sonidos---------------------------------------------
+  sound = pygame.mixer.Sound("sound.wav")#sonido del disparo 
 
   #player = pygame.image.load('Player1.png').convert_alpha() #quieto
   secuenciaderecha = cargar_fondo("secuenciaderecha.png", 48 , 57) #movimiento
@@ -74,8 +77,19 @@ if __name__ == '__main__':
   jugador.nivel = nivel_actual
 
 
-  jugador.rect.x = 340
-  jugador.rect.y = ALTO - jugador.rect.y
+  ##############################
+  # se crean las listas para todos los objetos----------------- 
+  ls_todos =  pygame.sprite.Group()
+  #ls_jugadores = pygame.sprite.Group()
+  #ls_enemigos = pygame.sprite.Group()
+  ls_balas = pygame.sprite.Group()
+  #ls_balae =  pygame.sprite.Group()
+  #ls_asteroides = pygame.sprite.Group()
+  #ls_planetas = pygame.sprite.Group()
+
+
+  jugador.rect.x = 300
+  jugador.rect.y = 40
   activos_sp_lista.add(jugador) 
 
   fin = False
@@ -99,6 +113,15 @@ if __name__ == '__main__':
           if event.type == pygame.QUIT:
               fin = True
 
+          if keys_down[K_SPACE]:
+            Bala = Bullet('bullet.png')
+            sound.play()
+            Bala.rect.x = jugador.rect.x+15
+            Bala.rect.y = jugador.rect.y
+            ls_balas.add(Bala)
+            #activos_sp_lista.add(Bala)
+            ls_todos.add(Bala)
+
       if keys_down[K_LEFT]:
         jugador.ir_izq(secuenciaizquierda,contador_moverizquierda)
 
@@ -117,7 +140,7 @@ if __name__ == '__main__':
           contador_moverderecha = 0
 
       if keys_down[K_UP]:
-        
+
         jugador.salto(secuenciasalto)
 
         if contador_salto < 5:
@@ -163,7 +186,10 @@ if __name__ == '__main__':
             jugador.nivel=nivel_actual
 
       # Dibujamos y refrescamos
-      
+      ls_todos.update()
+      ls_todos.draw(pantalla)
+      pygame.display.flip()
+
       nivel_actual.draw(pantalla)
       activos_sp_lista.draw(pantalla)
       reloj.tick(60)
