@@ -23,6 +23,7 @@ class Jugador(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load(imagen).convert_alpha()
         self.rect = self.image.get_rect()
+        self.direccion = 1   #mira hacia adelante con 1, mira hacia atras con 0
     
     def update(self,parado,bajando):
         """ Mueve el jugador. """
@@ -98,10 +99,19 @@ class Jugador(pygame.sprite.Sprite):
         self.vel_x = 6        
         self.image=secuenciaderecha[cont][0]
 
+    def disparo_derecha(self,sec,cont):
+        self.image=sec[cont][0]
+
+    def disparo_izquierda(self,sec,cont):
+        self.image=sec[cont][0]
+
     def agacharse(self,imagen):
         self.image = imagen
 
-    def no_mover(self,imagen):
+    def no_mover(self,imagen_der,imagen_izq):
         """ Usuario no pulsa teclas """
         self.vel_x = 0
-        self.image= imagen
+        if self.direccion == 1:
+            self.image= imagen_der
+        else:
+            self.image= imagen_izq

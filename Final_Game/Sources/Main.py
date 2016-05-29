@@ -52,10 +52,14 @@ if __name__ == '__main__':
 
   secuenciaizquierda = cargar_fondo("secuenciaizquierda.png",48,57)
   secuenciasalto = cargar_fondo("secuenciasalto.png",51,63,)
-  secuenciadisparo = cargar_fondo("secuenciadisparo.png",71,53)
+  secuenciadisparo_der = cargar_fondo("secuenciadisparo_der.png",71,53)
+  secuenciadisparo_izq = cargar_fondo("secuenciadisparo_izq.png",71,53)
+
+
 
   agachado = pygame.image.load("agachado.png").convert_alpha()
   parado = pygame.image.load("Player1.png").convert_alpha()
+  parado_izq = pygame.image.load("Player1_izq.png").convert_alpha()
 
   bajando = secuenciasalto[2][0]
 
@@ -99,6 +103,8 @@ if __name__ == '__main__':
 
   contador_moverderecha = 0
   contador_moverizquierda = 0
+  contador_disparo_derecha = 0
+  contador_disparo_izquierda = 0
   contador_salto = 0
   
   tiempo = 10
@@ -114,6 +120,11 @@ if __name__ == '__main__':
               fin = True
 
           if keys_down[K_SPACE]:
+            if jugador.direccion == 1:
+              jugador.disparo_derecha(secuenciadisparo_der,contador_disparo_derecha)
+            else:
+              jugador.disparo_izquierda(secuenciadisparo_izq,contador_disparo_izquierda)
+
             Bala = Bullet('bullet.png')
             sound.play()
             Bala.rect.x = jugador.rect.x+15
@@ -123,6 +134,7 @@ if __name__ == '__main__':
             ls_todos.add(Bala)
 
       if keys_down[K_LEFT]:
+        jugador.direccion = 0
         jugador.ir_izq(secuenciaizquierda,contador_moverizquierda)
 
         if contador_moverizquierda < 5:
@@ -131,6 +143,7 @@ if __name__ == '__main__':
           contador_moverizquierda = 0
 
       if keys_down[K_RIGHT]:
+        jugador.direccion = 1
 
         jugador.ir_der(secuenciaderecha,contador_moverderecha)
                    
@@ -154,9 +167,9 @@ if __name__ == '__main__':
 
       if event.type == pygame.KEYUP:
           if event.key == pygame.K_LEFT and jugador.vel_x < 0:
-              jugador.no_mover(parado)
+              jugador.no_mover(parado,parado_izq)
           if event.key == pygame.K_RIGHT and jugador.vel_x > 0:
-              jugador.no_mover(parado)
+              jugador.no_mover(parado,parado_izq)
 
       # Actualizamos al jugador.
       activos_sp_lista.update(parado,bajando)
