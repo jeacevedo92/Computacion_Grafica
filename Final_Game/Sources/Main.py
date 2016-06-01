@@ -7,6 +7,7 @@ from Colors import *
 from Bullet import *
 
 from nivel1 import *
+from nivel2 import *
 from Player import *
 from plataforma import *
 from nivel import *
@@ -47,28 +48,38 @@ if __name__ == '__main__':
   sound = pygame.mixer.Sound("sound.wav")#sonido del disparo 
 
   #player = pygame.image.load('Player1.png').convert_alpha() #quieto
-  secuenciaderecha = cargar_fondo("secuenciaderecha.png", 48 , 57) #movimiento
+  secuenciaderecha = cargar_fondo('../Images/secuenciaderecha.png', 48 , 57) #movimiento
+  secuenciaizquierda = cargar_fondo('../Images/secuenciaizquierda.png',48,57)
 
+  #secuenciasalto = cargar_fondo("../Images/secuenciasalto.png",51,63,)
+  #secuenciadisparo_der = cargar_fondo('../Images/secuenciadisparo_der.png',71,53)
+  #secuenciadisparo_izq = cargar_fondo('../Images/secuenciadisparo_izq.png',71,53)
+  
+  fondonivel2 = pygame.image.load('../Images/fondonivel2.jpg')
 
-  secuenciaizquierda = cargar_fondo("secuenciaizquierda.png",48,57)
-  secuenciasalto = cargar_fondo("secuenciasalto.png",51,63,)
-  secuenciadisparo_der = cargar_fondo("secuenciadisparo_der.png",71,53)
-  secuenciadisparo_izq = cargar_fondo("secuenciadisparo_izq.png",71,53)
+  disparo = pygame.image.load('../Images/disparo.png')
+  disparo_izquierda = pygame.image.load('../Images/disparo_izq.png')
 
+  agachado = pygame.image.load('../Images/agachado.png').convert_alpha()
+  agachado_izq = pygame.image.load('../Images/agachado_izq.png').convert_alpha()
 
+  parado = pygame.image.load('../Images/Player1.png').convert_alpha()
+  parado_izq = pygame.image.load('../Images/Player1_izq.png').convert_alpha()
 
-  agachado = pygame.image.load("agachado.png").convert_alpha()
-  parado = pygame.image.load("Player1.png").convert_alpha()
-  parado_izq = pygame.image.load("Player1_izq.png").convert_alpha()
+  subiendo = pygame.image.load('../Images/subiendo_derecha.png').convert_alpha()
+  subiendo_izq = pygame.image.load('../Images/subiendo_izq.png').convert_alpha()
 
-  bajando = secuenciasalto[2][0]
+  bajando = pygame.image.load('../Images/bajando_derecha.png').convert_alpha()
+  bajando_izq = pygame.image.load('../Images/bajando_izq.png').convert_alpha()
+  #bajando = secuenciasalto[2][0]
 
   # Creamos jugador
-  jugador = Jugador('Player1.png')
+  jugador = Jugador('../Images/Player1.png')
 
   # Creamos los niveles
   nivel_lista = []
   nivel_lista.append( Nivel_01(jugador) )
+  nivel_lista.append( Nivel_02(jugador) )
 
   # Establecemos nivel actual
   nivel_actual_no = 0
@@ -121,14 +132,17 @@ if __name__ == '__main__':
 
           if keys_down[K_SPACE]:
             if jugador.direccion == 1:
-              jugador.disparo_derecha(secuenciadisparo_der,contador_disparo_derecha)
+              jugador.disparo_derecha(disparo,contador_disparo_derecha)
             else:
-              jugador.disparo_izquierda(secuenciadisparo_izq,contador_disparo_izquierda)
+              jugador.disparo_izquierda(disparo_izquierda,contador_disparo_izquierda)
 
-            Bala = Bullet('bullet.png')
+
+            print jugador.direccion
+            Bala = Bullet('../Images/bullet.png',jugador.direccion)
+            #print Bala.direccion
             sound.play()
-            Bala.rect.x = jugador.rect.x+15
-            Bala.rect.y = jugador.rect.y
+            Bala.rect.x = jugador.rect.x+25
+            Bala.rect.y = jugador.rect.y+2
             ls_balas.add(Bala)
             #activos_sp_lista.add(Bala)
             ls_todos.add(Bala)
@@ -154,7 +168,11 @@ if __name__ == '__main__':
 
       if keys_down[K_UP]:
 
-        jugador.salto(secuenciasalto)
+        if jugador.direccion == 0:
+          jugador.salto(subiendo_izq)
+        else:          
+          jugador.salto(subiendo)
+
 
         if contador_salto < 5:
           contador_salto += 1
@@ -163,7 +181,10 @@ if __name__ == '__main__':
 
 
       if keys_down[K_DOWN]:
-        jugador.agacharse(agachado)
+        if jugador.direccion == 0:
+          jugador.agacharse(agachado_izq)
+        else:          
+          jugador.agacharse(agachado)
 
       if event.type == pygame.KEYUP:
           if event.key == pygame.K_LEFT and jugador.vel_x < 0:
@@ -172,7 +193,7 @@ if __name__ == '__main__':
               jugador.no_mover(parado,parado_izq)
 
       # Actualizamos al jugador.
-      activos_sp_lista.update(parado,bajando)
+      activos_sp_lista.update(bajando,bajando_izq)
   
       # Actualizamos elementos en el nivel
       nivel_actual.update()
@@ -188,6 +209,9 @@ if __name__ == '__main__':
          dif = 120 - jugador.rect.x
          jugador.rect.x = 120
          nivel_actual.Mover_fondo(dif)
+         
+      if nivel_actual_no == 1:
+        nivel_actual.fondo = fondonivel2
 
       #Si llegamos al final del nivel
       pos_actual=jugador.rect.x + nivel_actual.mov_fondo

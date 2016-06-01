@@ -11,7 +11,7 @@ class Nivel(object):
     
     # Imagen de Fondo
     #fondo = None
-    fondo=pygame.image.load("fondo2.png")
+    fondo=pygame.image.load('../Images/fondo2.png')
     #valor desplazamiento de fondo
     mov_fondo=0
     
@@ -21,6 +21,7 @@ class Nivel(object):
         self.plataforma_lista = pygame.sprite.Group()
         self.enemigos_lista = pygame.sprite.Group()
         self.jugador = jugador
+        #~ self.fondo = pygame.image.load("fondo2.png")
     
     # Actualizamos elementos en el nivel
     def update(self):

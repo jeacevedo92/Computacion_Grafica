@@ -25,10 +25,10 @@ class Jugador(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.direccion = 1   #mira hacia adelante con 1, mira hacia atras con 0
     
-    def update(self,parado,bajando):
+    def update(self,bajando,bajando_izq):
         """ Mueve el jugador. """
         # Gravedad
-        self.calc_grav(bajando,parado)
+        self.calc_grav(bajando,bajando_izq)
         
         # Mover izq/der
         self.rect.x += self.vel_x
@@ -60,32 +60,36 @@ class Jugador(pygame.sprite.Sprite):
             # Detener movimiento vertical
             self.vel_y = 0
 
-    def calc_grav(self,bajando,parado):
+    def calc_grav(self,bajando,bajando_izq):
         """ Calculamos efecto de la gravedad. """
         if self.vel_y == 0:
             self.vel_y = 1
            #self.image=parado
         else:
             self.vel_y += .35
-            self.image=bajando
+            if self.direccion == 0:
+                self.image=bajando_izq
+            else:
+                self.image=bajando
+
         
         # Revisamos si estamos en el suelo
         if self.rect.y >= ALTO - self.rect.height and self.vel_y >= 0:
             self.vel_y = 0
             self.rect.y = ALTO - self.rect.height
 
-    def salto(self,secuenciasalto):
+    def salto(self,subiendo):
         """ saltamos al pulsar boton de salto """
-        print "en salto"
+        #print "en salto"
         # Nos movemos abajo un poco y revisamos si hay una plataforma bajo el jugador
-        self.rect.y += 2
+        self.rect.y += 1
         plataforma_col_lista = pygame.sprite.spritecollide(self, self.nivel.plataforma_lista, False)
-        self.rect.y -= 2
+        self.rect.y -= 1
         
         # Si es posible saltar, aumentamos velocidad hacia arriba
         if len(plataforma_col_lista) > 0 or self.rect.bottom >= ALTO:
             self.vel_y = -10
-            self.image=secuenciasalto[1][0]
+            self.image=subiendo
 
     # Control del movimiento
     def ir_izq(self,secuenciaizquierda,cont):
@@ -100,10 +104,10 @@ class Jugador(pygame.sprite.Sprite):
         self.image=secuenciaderecha[cont][0]
 
     def disparo_derecha(self,sec,cont):
-        self.image=sec[cont][0]
+        self.image=sec
 
     def disparo_izquierda(self,sec,cont):
-        self.image=sec[cont][0]
+        self.image=sec
 
     def agacharse(self,imagen):
         self.image = imagen
