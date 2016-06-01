@@ -33,7 +33,7 @@ class Nivel(object):
         """ Dibuja lo que se encuentre en el nivel. """
         
         # Dibujamos fondo
-        pantalla.fill(AZUL)
+        #pantalla.fill(AZUL)
         
         pantalla.blit(self.fondo, (0,0))
         

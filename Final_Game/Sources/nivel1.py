@@ -2,7 +2,7 @@ import pygame
 from Colors import *
 from nivel import *
 from plataforma import *
-
+from Enemy import *
 # Creamos variasplataformas para un nivel
 class Nivel_01(Nivel):
     """ Definition for level 1. """
@@ -71,14 +71,29 @@ class Nivel_01(Nivel):
                   ["../Images/cajita.png", 1690, 455],
 
                   ["../Images/cajita1.png", 1500, 410],                
-                  ["../Images/cajita1.png", 1700, 410],
-  
+                  ["../Images/cajita1.png", 1700, 410],  
                  ]
+        enemis = [
+        ["../Images/robot.png",550,420],
+        #["../Images/robot.png",600,0],
+        #["../Images/robot.png",700,0]
+        ]
+
             
         # Go through the array above and add platforms
         for plataforma in nivel:
-            bloque = Plataforma(plataforma[0])
-            bloque.rect.x = plataforma[1]
-            bloque.rect.y = plataforma[2]
-            bloque.jugador = self.jugador
-            self.plataforma_lista.add(bloque)
+
+          #Plataformas
+          bloque = Plataforma(plataforma[0])
+          bloque.rect.x = plataforma[1]
+          bloque.rect.y = plataforma[2]
+          bloque.jugador = self.jugador
+          self.plataforma_lista.add(bloque)
+
+
+        for enemigo in enemis:
+          e = Enemy(enemigo[0],5)
+          e.rect.x = enemigo[1]
+          e.rect.y = enemigo[2]
+          self.enemigos_lista.add(e) 
+

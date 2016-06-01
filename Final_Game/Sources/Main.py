@@ -50,6 +50,9 @@ if __name__ == '__main__':
   #player = pygame.image.load('Player1.png').convert_alpha() #quieto
   secuenciaderecha = cargar_fondo('../Images/secuenciaderecha.png', 48 , 57) #movimiento
   secuenciaizquierda = cargar_fondo('../Images/secuenciaizquierda.png',48,57)
+  
+  secuenciaderecha = cargar_fondo('../Images/robot.png', 46 , 48)
+
 
   #secuenciasalto = cargar_fondo("../Images/secuenciasalto.png",51,63,)
   #secuenciadisparo_der = cargar_fondo('../Images/secuenciadisparo_der.png',71,53)
