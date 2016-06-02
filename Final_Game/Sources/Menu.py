@@ -1,12 +1,12 @@
 import pygame
-from colores import *
+from Colors import *
 
 class Menu():
 
 	color=BLANCO
 	fondo=NEGRO
 	espacio=30
-	titulo_x, titulo_y=200,200
+	titulo_x, titulo_y=450,300
 	pos_titulo=(titulo_x, titulo_y)
 	opciones=[]
 	pos_op=1
@@ -29,8 +29,8 @@ class Menu():
 
 
 	def draw(self, pantalla):
-		self.texto=self.fuente.render('Menu',True,self.color)
-		pantalla.blit(self.texto, self.pos_titulo)
+		#self.texto=self.fuente.render('Menu',True,self.color)
+		#pantalla.blit(self.texto, self.pos_titulo)
 		i=1
 		for op in self.opciones:
 			self.texto=self.fuente.render(op,True,self.color)

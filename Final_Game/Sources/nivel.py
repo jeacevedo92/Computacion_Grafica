@@ -8,6 +8,7 @@ class Nivel(object):
     # Lista de sprites usada en todos los niveles. Add or remove
     plataforma_lista = None
     enemigos_lista = None
+    fatalplat = None
     
     # Imagen de Fondo
     #fondo = None
@@ -20,14 +21,16 @@ class Nivel(object):
             collide with the player. """
         self.plataforma_lista = pygame.sprite.Group()
         self.enemigos_lista = pygame.sprite.Group()
+        self.fatalplat = pygame.sprite.Group()
         self.jugador = jugador
-        #~ self.fondo = pygame.image.load("fondo2.png")
     
     # Actualizamos elementos en el nivel
     def update(self):
         """ Actualiza todo lo que este en este nivel."""
         self.plataforma_lista.update()
         self.enemigos_lista.update()
+        self.fatalplat.update()
+
     
     def draw(self, pantalla):
         """ Dibuja lo que se encuentre en el nivel. """
@@ -40,10 +43,19 @@ class Nivel(object):
         # Dibujamos todos los sprites en las listas
         self.plataforma_lista.draw(pantalla)
         self.enemigos_lista.draw(pantalla)
+        self.fatalplat.draw(pantalla)
+
 
     def Mover_fondo(self, mov_x):
         self.mov_fondo += mov_x
         for plataforma in self.plataforma_lista:
             plataforma.rect.x += mov_x
         for enemigo in self.enemigos_lista:
-            enemigo.rect.x += mov_x
+            #~ enemigo.rect.x += mov_x
+            enemigo.desplazamiento += mov_x
+
+        for plataforma in self.fatalplat:
+            plataforma.rect.x += mov_x
+
+
+            

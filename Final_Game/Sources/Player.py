@@ -24,6 +24,8 @@ class Jugador(pygame.sprite.Sprite):
         self.image = pygame.image.load(imagen).convert_alpha()
         self.rect = self.image.get_rect()
         self.direccion = 1   #mira hacia adelante con 1, mira hacia atras con 0
+        self.vida = 3
+        self.salud = 60
     
     def update(self,bajando,bajando_izq):
         """ Mueve el jugador. """
