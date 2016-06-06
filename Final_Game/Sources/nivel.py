@@ -9,6 +9,12 @@ class Nivel(object):
     plataforma_lista = None
     enemigos_lista = None
     fatalplat = None
+
+    checkpoin_lista = None
+
+    modificadores = None
+
+    checkpoint = [100,40]
     
     # Imagen de Fondo
     #fondo = None
@@ -22,7 +28,10 @@ class Nivel(object):
         self.plataforma_lista = pygame.sprite.Group()
         self.enemigos_lista = pygame.sprite.Group()
         self.fatalplat = pygame.sprite.Group()
+        self.modificadores = pygame.sprite.Group()
         self.jugador = jugador
+        self.checkpoint = [100,40]
+        self.checkpoin_lista = pygame.sprite.Group()
     
     # Actualizamos elementos en el nivel
     def update(self):
@@ -30,6 +39,8 @@ class Nivel(object):
         self.plataforma_lista.update()
         self.enemigos_lista.update()
         self.fatalplat.update()
+        self.modificadores.update()
+        self.checkpoin_lista.update()
 
     
     def draw(self, pantalla):
@@ -44,17 +55,28 @@ class Nivel(object):
         self.plataforma_lista.draw(pantalla)
         self.enemigos_lista.draw(pantalla)
         self.fatalplat.draw(pantalla)
+        self.modificadores.draw(pantalla)
+
+        self.checkpoin_lista.draw(pantalla)
 
 
     def Mover_fondo(self, mov_x):
         self.mov_fondo += mov_x
+        self.checkpoint[0] += mov_x
         for plataforma in self.plataforma_lista:
             plataforma.rect.x += mov_x
+
         for enemigo in self.enemigos_lista:
             #~ enemigo.rect.x += mov_x
             enemigo.desplazamiento += mov_x
 
         for plataforma in self.fatalplat:
+            plataforma.rect.x += mov_x
+
+        for plataforma in self.modificadores:
+            plataforma.rect.x += mov_x
+
+        for plataforma in self.checkpoin_lista:
             plataforma.rect.x += mov_x
 
 

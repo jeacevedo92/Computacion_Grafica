@@ -6,7 +6,7 @@ WIDTH = 800
 HIGH = 600
 
 class Enemy(pygame.sprite.Sprite):
-	def __init__(self,imagen,velocidad,x,y,distancia,sec_der,sec_izq,num_sprites):
+	def __init__(self,imagen,velocidad,x,y,distancia,sec_der,sec_izq,num_sprites,dureza):
 		pygame.sprite.Sprite.__init__(self)
 		self.image = pygame.image.load(imagen).convert_alpha()
 		self.rect = self.image.get_rect()#
@@ -14,6 +14,7 @@ class Enemy(pygame.sprite.Sprite):
 		self.recorrido_ida = Bresenham1(x,y,x+distancia,y)
 		self.cont = 0
 		self.velocidad = velocidad
+
 		
 		self.direccion = True #True = derecha, False = izquierda
 		self.desplazamiento = 0
@@ -22,6 +23,10 @@ class Enemy(pygame.sprite.Sprite):
 		self.sec_izq = sec_izq
 		self.cont_imagen = 0
 		self.limit = num_sprites
+		self.dureza = dureza
+
+		#self.disp = 0
+        
 
 
 	def update(self):

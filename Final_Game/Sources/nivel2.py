@@ -9,7 +9,7 @@ from Bresenham1 import *
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self,imagen,velocidad,x,y,distancia,sec_der,sec_izq,num_sprites):
+    def __init__(self,imagen,velocidad,x,y,distancia,sec_der,sec_izq,num_sprites,dureza,dispara):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load(imagen).convert_alpha()
         self.rect = self.image.get_rect()#
@@ -17,6 +17,11 @@ class Enemy(pygame.sprite.Sprite):
         self.recorrido_ida = Bresenham1(x,y,x+distancia,y)
         self.cont = 0
         self.velocidad = velocidad
+
+        #para los disparos
+
+        self.disparar= random.randrange(200)# tiempo para disparar cada 200 pixeles   
+        
         
         self.direccion = True #True = derecha, False = izquierda
         self.desplazamiento = 0
@@ -25,6 +30,9 @@ class Enemy(pygame.sprite.Sprite):
         self.sec_izq = sec_izq
         self.cont_imagen = 0
         self.limit = num_sprites
+        self.dureza = dureza
+
+        #self.disp = dispara
 
 
     def update(self):
@@ -88,6 +96,9 @@ sec_der_z = cargar_fondo('../Images/zoomer.png', 30, 21)
 
 
 
+boss = cargar_fondo('../Images/boss.png', 95, 150)
+
+
 class Nivel_02(Nivel):
     """ Definicion para el nivel 2. """
     
@@ -96,7 +107,7 @@ class Nivel_02(Nivel):
         
         # Llamamos al padre
         Nivel.__init__(self, jugador)
-        self.limite=-4000
+        self.limite=-4500
         # Arreglo con ancho, alto, x, y de la plataforma
         nivel = [      
 
@@ -135,19 +146,50 @@ class Nivel_02(Nivel):
         ["../Images/caja_alien1.png",3780, 450],
 
 
-               
+        ["../Images/plataforma_alien2muycorta.png",4000, 500],
+        ["../Images/plataforma_alien21muycorta.png",4010, 500],
+
+        ["../Images/plataforma_alien2muycorta.png",4200, 500],
+        ["../Images/plataforma_alien21muycorta.png",4210, 500],
+
+        ["../Images/plataforma_alien2muycorta.png",4400, 500],
+        ["../Images/plataforma_alien21muycorta.png",4410, 500],                  
     
 		]
 
         enemys = [
-        ["../Images/robot.png",1400,220,170,sec_der_z,sec_der_z,6],
-        ["../Images/robot.png",2000,220,170,sec_der_z,sec_der_z,6],
+        #["../Images/robot1.png",1400,220,170,sec_der_z,sec_der_z,6,0],
+        #["../Images/robot1.png",2000,220,170,sec_der_z,sec_der_z,6,0],
 
-        #["../Images/robot.png",2200,485,230,sec_der_m,sec_izq_m,12],        
-        #["../Images/robot.png",3050,485,310,sec_der_m1,sec_izq_m1,8],
-        #["../Images/robot.png",3400,485,130,sec_der_m,sec_izq_m,12],
-        #["../Images/robot.png",3600,485,180,sec_der_m1,sec_izq_m1,8]
+        ["../Images/robot1.png",300,480,110,sec_der_r,sec_izq_r,6,5,0],
+
+        ["../Images/robot1.png",1070,500,50,sec_der_z,sec_der_z,6,1,0],
+        ["../Images/robot1.png",1080,500,80,sec_der_z,sec_der_z,6,1,0],
+
+        #["../Images/robot1.png",2900,500,200,sec_der_z,sec_der_z,6,1,0],
+        #["../Images/robot1.png",3100,500,200,sec_der_z,sec_der_z,6,1,0],
+        #["../Images/robot1.png",3300,500,200,sec_der_z,sec_der_z,6,1,0],
+        #["../Images/robot1.png",3500,500,200,sec_der_z,sec_der_z,6,1,0],
+
+
+        ["../Images/robot1.png",800,500,50,sec_der_z,sec_der_z,6,1,0],
+        ["../Images/robot1.png",900,500,80,sec_der_z,sec_der_z,6,1,0],
+
+        
+        ["../Images/boss.png",4600,200,0, boss ,boss ,1,100,1],
+        
+
+        #["../Images/boss.png",4000,400,0, boss ,boss ,1],
+        #["../Images/boss.png",4000,400,0, boss ,boss ,1],
+        #["../Images/boss.png",4000,400,0, boss ,boss ,1],
+        #["../Images/boss.png",4000,400,0, boss ,boss ,1],
+        #["../Images/boss.png",4000,400,0, boss ,boss ,1],
+        #["../Images/boss.png",4000,400,0, boss ,boss ,1],
+        #["../Images/boss.png",4000,400,0, boss ,boss ,1],               
+        #["../Images/boss.png",4000,400,0, boss ,boss ,1]
         ]
+
+        
 
         fatalplat =[
         ["../Images/lava.png",0, 550],
@@ -157,19 +199,34 @@ class Nivel_02(Nivel):
         ["../Images/lava.png",2800, 550],
         ["../Images/lava.png",3500, 550],
         ["../Images/lava.png",4200, 550],
+
+
         ]
 
+
+
+        modifi=[
+        
+        ["../Images/modificador_4.png", 100, 450,4],
+        ["../Images/modificador_5.png", 2100, 170,5]
+
+        ]
+
+        cp =[
+        ["../Images/checkpoint.png",1490, 100,0],
+
+        ]
             
         # Go through the array above and add platforms
         for plataforma in nivel:
-            bloque = Plataforma(plataforma[0])
+            bloque = Plataforma(plataforma[0],0)
             bloque.rect.x = plataforma[1]
             bloque.rect.y = plataforma[2]
             bloque.jugador = self.jugador
             self.plataforma_lista.add(bloque)
 
         for enemigo in enemys:
-          e = Enemy (enemigo[0],5,enemigo[1],enemigo[2],enemigo[3],enemigo[4],enemigo[5],enemigo[6])
+          e = Enemy (enemigo[0],5,enemigo[1],enemigo[2],enemigo[3],enemigo[4],enemigo[5],enemigo[6],enemigo[7],enemigo[8])
           e.rect.x = enemigo[1]
           e.rect.y = enemigo[2]
           self.enemigos_lista.add(e) 
@@ -178,8 +235,24 @@ class Nivel_02(Nivel):
         for plataformaf in fatalplat:
 
           #Plataformas
-          bloque = Plataforma(plataformaf[0])
+          bloque = Plataforma(plataformaf[0],0)
           bloque.rect.x = plataformaf[1]
           bloque.rect.y = plataformaf[2]
           bloque.jugador = self.jugador
           self.fatalplat.add(bloque)
+
+
+        for plataformam in modifi:
+          bloque = Plataforma(plataformam[0],plataformam[3])
+          bloque.rect.x = plataformam[1]
+          bloque.rect.y = plataformam[2]
+          bloque.jugador = self.jugador
+          self.modificadores.add(bloque)
+
+        for plataformam in cp:
+          bloque = Plataforma(plataformam[0],plataformam[3])
+          bloque.rect.x = plataformam[1]
+          bloque.rect.y = plataformam[2]
+          bloque.jugador = self.jugador
+          self.checkpoin_lista.add(bloque)
+
