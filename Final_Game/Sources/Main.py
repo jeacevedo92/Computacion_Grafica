@@ -187,7 +187,7 @@ if __name__ == '__main__':
   nivel_lista.append( Nivel_02(jugador) )
 
   # Establecemos nivel actual
-  nivel_actual_no = 1
+  nivel_actual_no = 0
   nivel_actual = nivel_lista[nivel_actual_no]
 
 
@@ -290,16 +290,16 @@ if __name__ == '__main__':
       if history:
         pantalla.blit(history_1,(0,0))
         pygame.display.flip() 
-        #time.sleep(3)
+        time.sleep(10)
         pantalla.blit(history_2,(0,0))
         pygame.display.flip() 
-        #time.sleep(3)
+        time.sleep(10)
         pantalla.blit(history_3,(0,0))
         pygame.display.flip() 
-        #time.sleep(3)
+        time.sleep(10)
         pantalla.blit(history_4,(0,0))
         pygame.display.flip() 
-        #time.sleep(3)
+        time.sleep(10)
         game_init = True
         history = False
              
